@@ -1,3 +1,5 @@
+using EntityFrameworkWinForms.Models;
+
 namespace EntityFrameworkWinForms
 {
     public partial class Form1 : Form
@@ -24,5 +26,21 @@ namespace EntityFrameworkWinForms
             MessageBox.Show("Don\'t do this!", "Oups!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
         }
 
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            List<Student> students = new List<Student>
+            {
+                new Student{ Name = "HoWL", Id = 1 },
+                new Student{ Name = "HoWL1", Id = 2 },
+                new Student{ Name = "HoWL2", Id = 3 }
+
+            };
+            dataGridView1.DataSource = students;
+        }
     }
 }
