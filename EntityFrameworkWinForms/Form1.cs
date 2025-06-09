@@ -1,4 +1,5 @@
 using EntityFrameworkWinForms.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace EntityFrameworkWinForms
 {
@@ -31,16 +32,51 @@ namespace EntityFrameworkWinForms
 
         }
 
+        static Random rnd = new Random();
+
+        public static Student GenerateStudent(UniversityContext context)
+        {
+            Student student = new Student();
+            var names = new List<string>() { "HoWl", "Дмитро", "Ігор", "Микита", "Aboba", "Dram", "1holl", "None" };
+            student.Name = names[rnd.Next(0, names.Count)];
+            var a = rnd.Next(1, 5);
+            student.groupe = context.Groups.Where(s => s.Id == a).First();
+            student.Avg = RandomAvg();
+            return student;
+        }
+
+        public static double RandomAvg()
+        {
+            return Math.Round(rnd.Next(1, 11) + rnd.NextDouble(), 2);
+        }
+
         private void Form1_Load(object sender, EventArgs e)
         {
-            List<Student> students = new List<Student>
+            using (var context = new UniversityContext())
             {
-                new Student{ Name = "HoWL", Id = 1 },
-                new Student{ Name = "HoWL1", Id = 2 },
-                new Student{ Name = "HoWL2", Id = 3 }
+                context.Database.EnsureCreated();
+                //for (int i = 0; i < 10; i++)
+                //    context.Add(GenerateStudent(context));
+                //context.Groups.Add(new Group { Name = "P33", Curator = new Teacher { Name = "HoWL", SecondName = "Abobov" } });
+                //context.Groups.Add(new Group { Name = "P34", Curator = new Teacher { Name = "Dram", SecondName = "Dramov" } });
+                //context.Groups.Add(new Group { Name = "P35", Curator = new Teacher { Name = "1holl", SecondName = "BezVideoCardovich" } });
+                //context.Groups.Add(new Group { Name = "P55", Curator = new Teacher { Name = "Shex", SecondName = "Shrecsik" } });
+                //context.Groups.Add(new Group { Name = "P007", Curator = new Teacher { Name = "none", SecondName = "none" } });
+                context.SaveChanges();
+                dataGridView1.DataSource = context.Students.Include(s => s.groupe).OrderBy(s => s.Id).ToList();
+                dataGridView2.DataSource = context.Groups.Include(s => s.Curator).OrderBy(s => s.Id).ToList();
+                dataGridView3.DataSource = context.Teachers.OrderBy(s => s.Id).ToList();
+            }
+        }
 
-            };
-            dataGridView1.DataSource = students;
+        private void dataGridView2_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void dataGridView3_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
         }
     }
 }
