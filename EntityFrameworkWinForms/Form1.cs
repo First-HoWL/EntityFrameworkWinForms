@@ -11,20 +11,20 @@ namespace EntityFrameworkWinForms
             InitializeComponent();
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            //button1.Text = $"{++clicks}";
-            MessageBox.Show("Hello!", "Hi!", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            MessageBox.Show("Not good!", "Oups!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-
         private void button3_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Don\'t do this!", "Oups!", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            if (textBox1.Text == string.Empty || textBox2.Text == string.Empty)
+                MessageBox.Show("Exeption!", "DON\'T DO THAT", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            else
+                //MessageBox.Show(textBox1.Text, "Hello there!");
+                using (var context = new UniversityContext())
+                {
+                    context.Database.EnsureCreated();
+                    context.Notes.Add(new Note { Name = textBox1.Text, Description = textBox2.Text });
+
+                    context.SaveChanges();
+                }
+            UpdateNotesGrid();
         }
 
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
@@ -50,21 +50,24 @@ namespace EntityFrameworkWinForms
             return Math.Round(rnd.Next(1, 11) + rnd.NextDouble(), 2);
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private void UpdateNotesGrid()
         {
-            /*using (var context = new UniversityContext())
+            using (var context = new UniversityContext())
             {
                 context.Database.EnsureCreated();
-                //for (int i = 0; i < 10; i++)
-                //    context.Add(GenerateStudent(context));
-                //context.Groups.Add(new Group { Name = "P33", Curator = new Teacher { Name = "HoWL", SecondName = "Abobov" } });
-                //context.Groups.Add(new Group { Name = "P34", Curator = new Teacher { Name = "Dram", SecondName = "Dramov" } });
-                //context.Groups.Add(new Group { Name = "P35", Curator = new Teacher { Name = "1holl", SecondName = "BezVideoCardovich" } });
-                //context.Groups.Add(new Group { Name = "P55", Curator = new Teacher { Name = "Shex", SecondName = "Shrecsik" } });
-                //context.Groups.Add(new Group { Name = "P007", Curator = new Teacher { Name = "none", SecondName = "none" } });
+                var notes = context.Notes.ToList();
+                dataGridView1.DataSource = notes;
+
+
+
+
                 context.SaveChanges();
-                dataGridView1.DataSource = context.Students.Include(s => s.groupe).OrderBy(s => s.Id).ToList();
-            }*/
+            }
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            UpdateNotesGrid();
         }
 
         private void dataGridView2_CellContentClick(object sender, DataGridViewCellEventArgs e)
