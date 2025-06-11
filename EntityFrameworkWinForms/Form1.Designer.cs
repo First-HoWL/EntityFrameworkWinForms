@@ -32,17 +32,13 @@
             button2 = new Button();
             button3 = new Button();
             dataGridView1 = new DataGridView();
-            dataGridView2 = new DataGridView();
-            dataGridView3 = new DataGridView();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)dataGridView2).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)dataGridView3).BeginInit();
             SuspendLayout();
             // 
             // button1
             // 
             button1.BackColor = Color.White;
-            button1.Location = new Point(12, 298);
+            button1.Location = new Point(627, 301);
             button1.Name = "button1";
             button1.Size = new Size(161, 119);
             button1.TabIndex = 0;
@@ -52,7 +48,7 @@
             // 
             // button2
             // 
-            button2.Location = new Point(199, 298);
+            button2.Location = new Point(538, 312);
             button2.Name = "button2";
             button2.Size = new Size(75, 23);
             button2.TabIndex = 1;
@@ -62,7 +58,7 @@
             // 
             // button3
             // 
-            button3.Location = new Point(199, 394);
+            button3.Location = new Point(538, 372);
             button3.Name = "button3";
             button3.Size = new Size(75, 23);
             button3.TabIndex = 2;
@@ -79,31 +75,11 @@
             dataGridView1.TabIndex = 3;
             dataGridView1.CellContentClick += dataGridView1_CellContentClick;
             // 
-            // dataGridView2
-            // 
-            dataGridView2.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView2.Location = new Point(375, 12);
-            dataGridView2.Name = "dataGridView2";
-            dataGridView2.Size = new Size(404, 187);
-            dataGridView2.TabIndex = 4;
-            dataGridView2.CellContentClick += dataGridView2_CellContentClick;
-            // 
-            // dataGridView3
-            // 
-            dataGridView3.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView3.Location = new Point(375, 214);
-            dataGridView3.Name = "dataGridView3";
-            dataGridView3.Size = new Size(404, 203);
-            dataGridView3.TabIndex = 5;
-            dataGridView3.CellContentClick += dataGridView3_CellContentClick;
-            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
-            Controls.Add(dataGridView3);
-            Controls.Add(dataGridView2);
             Controls.Add(dataGridView1);
             Controls.Add(button3);
             Controls.Add(button2);
@@ -112,8 +88,6 @@
             Text = "Form1";
             Load += Form1_Load;
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
-            ((System.ComponentModel.ISupportInitialize)dataGridView2).EndInit();
-            ((System.ComponentModel.ISupportInitialize)dataGridView3).EndInit();
             ResumeLayout(false);
         }
 
@@ -123,7 +97,5 @@
         private Button button2;
         private Button button3;
         private DataGridView dataGridView1;
-        private DataGridView dataGridView2;
-        private DataGridView dataGridView3;
     }
 }

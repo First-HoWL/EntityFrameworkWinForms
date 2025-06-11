@@ -48,23 +48,22 @@ namespace EntityFrameworkWinForms.Models
         }
     }
 
+    public class Note { 
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+    }
+
+    
 
     public class UniversityContext : DbContext
     {
-        public DbSet<Teacher> Teachers { get; set; }
-        public DbSet<Student> Students { get; set; }
-        public DbSet<Group> Groups { get; set; }
+        public DbSet<Note> Notes { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            string connectionString = "server=localhost;database=university;user=root;password=";
+            string connectionString = "server=localhost;database=notes;user=root;password=";
             optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
         }
-
-
-
     }
-
-
-
 }

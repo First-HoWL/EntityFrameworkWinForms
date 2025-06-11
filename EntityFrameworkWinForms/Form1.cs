@@ -34,7 +34,7 @@ namespace EntityFrameworkWinForms
 
         static Random rnd = new Random();
 
-        public static Student GenerateStudent(UniversityContext context)
+        /*public static Student GenerateStudent(UniversityContext context)
         {
             Student student = new Student();
             var names = new List<string>() { "HoWl", "Дмитро", "Ігор", "Микита", "Aboba", "Dram", "1holl", "None" };
@@ -43,7 +43,7 @@ namespace EntityFrameworkWinForms
             student.groupe = context.Groups.Where(s => s.Id == a).First();
             student.Avg = RandomAvg();
             return student;
-        }
+        }*/
 
         public static double RandomAvg()
         {
@@ -52,7 +52,7 @@ namespace EntityFrameworkWinForms
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            using (var context = new UniversityContext())
+            /*using (var context = new UniversityContext())
             {
                 context.Database.EnsureCreated();
                 //for (int i = 0; i < 10; i++)
@@ -64,9 +64,7 @@ namespace EntityFrameworkWinForms
                 //context.Groups.Add(new Group { Name = "P007", Curator = new Teacher { Name = "none", SecondName = "none" } });
                 context.SaveChanges();
                 dataGridView1.DataSource = context.Students.Include(s => s.groupe).OrderBy(s => s.Id).ToList();
-                dataGridView2.DataSource = context.Groups.Include(s => s.Curator).OrderBy(s => s.Id).ToList();
-                dataGridView3.DataSource = context.Teachers.OrderBy(s => s.Id).ToList();
-            }
+            }*/
         }
 
         private void dataGridView2_CellContentClick(object sender, DataGridViewCellEventArgs e)
