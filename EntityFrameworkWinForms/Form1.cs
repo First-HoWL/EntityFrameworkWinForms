@@ -1,6 +1,7 @@
 using EntityFrameworkWinForms.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics.Metrics;
+using System.Text;
 
 namespace EntityFrameworkWinForms
 {
@@ -14,78 +15,70 @@ namespace EntityFrameworkWinForms
 
         private void button3_Click(object sender, EventArgs e)
         {
-            if (textBox1.Text == string.Empty || textBox2.Text == string.Empty || comboBox2.Text == string.Empty)
-                MessageBox.Show("Exeption!", "DON\'T DO THAT", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            if (textBox1.Text == string.Empty || textBox2.Text == string.Empty)
+                MessageBox.Show("DON\'T DO THAT!", "Exeption", MessageBoxButtons.OK, MessageBoxIcon.Error);
             else
                 //MessageBox.Show(textBox1.Text, "Hello there!");
                 using (var context = new UniversityContext())
                 {
                     context.Database.EnsureCreated();
-                    context.Notes.Add(new Note { Name = textBox1.Text, Description = textBox2.Text, Status = comboBox2.Text });
-
-
-
+                    context.students.Add(new Student { Name = textBox1.Text, Avg = Convert.ToDouble(textBox2.Text), groupe = context.groups.Where(g => g.Id == Convert.ToInt32(textBox3.Text)).First() });
 
 
                     context.SaveChanges();
                 }
-            UpdateNotesGrid();
 
+            UpdateStudentsGrid();
 
-
-            /*textBox1.Text = string.Empty;
-            textBox2.Text = string.Empty;*/
+            textBox1.Text = string.Empty;
+            textBox2.Text = string.Empty;
         }
         private void button1_Click(object sender, EventArgs e)
         {
-            if (textBox1.Text == string.Empty || textBox2.Text == string.Empty || comboBox2.Text == string.Empty)
-                MessageBox.Show("Exeption!", "DON\'T DO THAT", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+            if (textBox1.Text == string.Empty || textBox2.Text == string.Empty)
+                MessageBox.Show("DON\'T DO THAT!", "Exeption", MessageBoxButtons.OK, MessageBoxIcon.Error);
             else
-                //MessageBox.Show(textBox1.Text, "Hello there!");
                 using (var context = new UniversityContext())
                 {
-                    int noteId = Convert.ToInt32(textBox3.Text);
-                    if (noteId == null)
+                    int studId = Convert.ToInt32(textBox4.Text);
+                    if (studId == null)
                         return;
                     context.Database.EnsureCreated();
 
-                    Note note = context.Notes.Find(noteId);
-                    note.Name = textBox1.Text;
-                    note.Description = textBox2.Text;
-                    note.Status = comboBox2.Text;
-
+                    
+                    Student student = context.students.Find(studId);
+                    student.Name = textBox1.Text;
+                    student.Avg = Convert.ToDouble(textBox2.Text);
 
 
                     context.SaveChanges();
                 }
-            UpdateNotesGrid();
+            UpdateStudentsGrid();
+
+
+
 
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            if (textBox1.Text == string.Empty || textBox2.Text == string.Empty || comboBox2.Text == string.Empty)
-                MessageBox.Show("Exeption!", "DON\'T DO THAT", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            else
-                //MessageBox.Show(textBox1.Text, "Hello there!");
-                using (var context = new UniversityContext())
+            using (var context = new UniversityContext())
+            {
+                int studId = Convert.ToInt32(textBox4.Text);
+                if (studId == null)
+                    return;
+                context.Database.EnsureCreated();
+
+
+                var a = MessageBox.Show("Are you sure?", "Question", MessageBoxButtons.YesNo);
+                if (a == DialogResult.Yes)
                 {
-                    int noteId = Convert.ToInt32(textBox3.Text);
-                    if (noteId == null)
-                        return;
-                    context.Database.EnsureCreated();
-
-                    
-                    var a = MessageBox.Show("Are you sure?", "", MessageBoxButtons.YesNo);
-                    if (a == DialogResult.Yes)
-                    {
-                        context.Notes.Remove(context.Notes.Find(noteId));
-                    }
-
-
-                    context.SaveChanges();
+                    context.students.Remove(context.students.Find(studId));
                 }
-            UpdateNotesGrid();
+                context.SaveChanges();
+            }
+            UpdateStudentsGrid();
         }
 
 
@@ -108,13 +101,27 @@ namespace EntityFrameworkWinForms
             return Math.Round(rnd.Next(1, 11) + rnd.NextDouble(), 2);
         }
 
-        private void UpdateNotesGrid()
+        private void UpdateStudentsGrid()
+        {
+            using (var context = new UniversityContext())
+            {
+                Group? group = dataGridView2.CurrentRow.DataBoundItem as Group;
+                if (group == null) group = new Group { Id = 0 };
+                textBox3.Text = Convert.ToString(group.Id);
+                context.Database.EnsureCreated();
+                var students = context.students.Include(s => s.groupe).OrderBy(s => s.Id).Where(s => s.groupe.Id == group.Id).ToList();
+                dataGridView1.DataSource = students;
+
+                context.SaveChanges();
+            }
+        }
+        private void UpdateGroupsGrid()
         {
             using (var context = new UniversityContext())
             {
                 context.Database.EnsureCreated();
-                var notes = context.Notes.ToList();
-                dataGridView1.DataSource = notes;
+                var Groups = context.groups.Include(s => s.Curator).ToList();
+                dataGridView2.DataSource = Groups;
 
                 context.SaveChanges();
             }
@@ -122,10 +129,50 @@ namespace EntityFrameworkWinForms
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            UpdateNotesGrid();
+
+            /*using (var context = new UniversityContext())
+            {
+                context.Database.EnsureCreated();
+
+                *//*context.groups.Add(
+                    new Group { Name = "P47", Curator = new Teacher { Name = "Menya", SecondName = "Net" } }
+                );*/
+            /*context.groups.AddRange(
+                new Group { Name = "P23", Curator = new Teacher { Name = "HoWL", SecondName = "Csharpowich" } },
+                new Group { Name = "P78", Curator = new Teacher { Name = "none", SecondName = "none" } },
+                new Group { Name = "P10", Curator = new Teacher { Name = "jsonReader", SecondName = "notJsonReader" } },
+                new Group { Name = "P55", Curator = new Teacher { Name = "Aboba", SecondName = "Abobowna" } }
+                );*//*
+            context.SaveChanges();
+            context.Database.EnsureCreated();
+
+            for (int i = 0; i < 10; i++)
+            {
+                context.students.Add(GenerateStudent(context));
+            }
+
+            context.SaveChanges();
+
+        };*/
+
+
+
+
+            UpdateGroupsGrid();
+            UpdateStudentsGrid();
+
         }
 
-
+        public static Student GenerateStudent(UniversityContext context)
+        {
+            Student student = new Student();
+            var names = new List<string>() { "HoWl", "Aboba", "Dram", "1holl", "None", "Misha", "Super Star" };
+            student.Name = names[rnd.Next(0, names.Count)];
+            var a = rnd.Next(1, 5);
+            student.groupe = context.groups.Where(s => s.Id == a).First();
+            student.Avg = RandomAvg();
+            return student;
+        }
 
         private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -134,15 +181,40 @@ namespace EntityFrameworkWinForms
 
         private void dataGridView1_SelectionChanged(object sender, EventArgs e)
         {
-            Note? CurrentNote = dataGridView1.CurrentRow.DataBoundItem as Note;
-            if (CurrentNote == null)
+            Student? CurrentStudent = dataGridView1.CurrentRow.DataBoundItem as Student;
+            if (CurrentStudent == null)
                 return;
-            textBox1.Text = CurrentNote.Name;
-            textBox2.Text = CurrentNote.Description;
-            comboBox2.Text = CurrentNote.Status;
-            textBox3.Text = Convert.ToString(CurrentNote.Id);
+            textBox1.Text = CurrentStudent.Name;
+            textBox2.Text = $"{CurrentStudent.Avg}";
+            textBox4.Text = Convert.ToString(CurrentStudent.Id);
+
+
         }
 
-        
+        private void dataGridView2_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+            UpdateStudentsGrid();
+        }
+
+        private void label2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        private void dataGridView2_SelectionChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox4_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

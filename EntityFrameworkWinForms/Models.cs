@@ -33,7 +33,7 @@ namespace EntityFrameworkWinForms.Models
         public override string ToString()
         {
             // return $"{Id,5} | {Name,10} | {Curator}";
-            return $"{Name,5}";
+            return $"{Id, 5} | {Name, 5}";
         }
     }
 
@@ -59,11 +59,14 @@ namespace EntityFrameworkWinForms.Models
 
     public class UniversityContext : DbContext
     {
-        public DbSet<Note> Notes { get; set; }
+        //public DbSet<Note> Notes { get; set; }
+        public DbSet<Student> students { get; set; }
+        public DbSet<Group> groups { get; set; }
+        public DbSet<Teacher> teachers { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            string connectionString = "server=localhost;database=notes;user=root;password=";
+            string connectionString = "server=localhost;database=university;user=root;password=";
             optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
         }
     }
