@@ -35,16 +35,13 @@
             label1 = new Label();
             label2 = new Label();
             textBox2 = new TextBox();
-            comboBox2 = new ComboBox();
-            label3 = new Label();
             textBox3 = new TextBox();
             button1 = new Button();
             button2 = new Button();
-            pictureBox1 = new PictureBox();
             dataGridView2 = new DataGridView();
             textBox4 = new TextBox();
+            button4 = new Button();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dataGridView2).BeginInit();
             SuspendLayout();
             // 
@@ -102,31 +99,11 @@
             textBox2.Size = new Size(164, 23);
             textBox2.TabIndex = 6;
             // 
-            // comboBox2
-            // 
-            comboBox2.DropDownStyle = ComboBoxStyle.DropDownList;
-            comboBox2.FormattingEnabled = true;
-            comboBox2.Items.AddRange(new object[] { "Complete", "In process", "Uncompete" });
-            comboBox2.Location = new Point(386, 577);
-            comboBox2.Name = "comboBox2";
-            comboBox2.Size = new Size(121, 23);
-            comboBox2.TabIndex = 9;
-            comboBox2.SelectedIndexChanged += comboBox2_SelectedIndexChanged;
-            // 
-            // label3
-            // 
-            label3.AutoSize = true;
-            label3.Location = new Point(397, 530);
-            label3.Name = "label3";
-            label3.Size = new Size(39, 15);
-            label3.TabIndex = 10;
-            label3.Text = "Status";
-            // 
             // textBox3
             // 
-            textBox3.Location = new Point(708, 619);
+            textBox3.Location = new Point(778, 604);
             textBox3.Name = "textBox3";
-            textBox3.Size = new Size(100, 23);
+            textBox3.Size = new Size(10, 23);
             textBox3.TabIndex = 11;
             textBox3.Visible = false;
             // 
@@ -150,17 +127,6 @@
             button2.UseVisualStyleBackColor = true;
             button2.Click += button2_Click;
             // 
-            // pictureBox1
-            // 
-            pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
-            pictureBox1.Location = new Point(803, 648);
-            pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(90, 97);
-            pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
-            pictureBox1.TabIndex = 14;
-            pictureBox1.TabStop = false;
-            pictureBox1.Visible = false;
-            // 
             // dataGridView2
             // 
             dataGridView2.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
@@ -181,19 +147,27 @@
             textBox4.Visible = false;
             textBox4.TextChanged += textBox4_TextChanged;
             // 
+            // button4
+            // 
+            button4.Location = new Point(421, 263);
+            button4.Name = "button4";
+            button4.Size = new Size(75, 23);
+            button4.TabIndex = 17;
+            button4.Text = "Window";
+            button4.UseVisualStyleBackColor = true;
+            button4.Click += button4_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 639);
+            Controls.Add(button4);
             Controls.Add(textBox4);
             Controls.Add(dataGridView2);
-            Controls.Add(pictureBox1);
             Controls.Add(button2);
             Controls.Add(button1);
             Controls.Add(textBox3);
-            Controls.Add(label3);
-            Controls.Add(comboBox2);
             Controls.Add(label2);
             Controls.Add(textBox2);
             Controls.Add(label1);
@@ -206,7 +180,6 @@
             Text = "Form1";
             Load += Form1_Load;
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ((System.ComponentModel.ISupportInitialize)dataGridView2).EndInit();
             ResumeLayout(false);
             PerformLayout();
@@ -219,13 +192,11 @@
         private Label label1;
         private Label label2;
         private TextBox textBox2;
-        private ComboBox comboBox2;
-        private Label label3;
         private TextBox textBox3;
         private Button button1;
         private Button button2;
-        private PictureBox pictureBox1;
         private DataGridView dataGridView2;
         private TextBox textBox4;
+        private Button button4;
     }
 }

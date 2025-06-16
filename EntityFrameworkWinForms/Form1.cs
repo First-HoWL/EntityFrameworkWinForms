@@ -33,6 +33,8 @@ namespace EntityFrameworkWinForms
             textBox1.Text = string.Empty;
             textBox2.Text = string.Empty;
         }
+
+
         private void button1_Click(object sender, EventArgs e)
         {
 
@@ -46,7 +48,7 @@ namespace EntityFrameworkWinForms
                         return;
                     context.Database.EnsureCreated();
 
-                    
+
                     Student student = context.students.Find(studId);
                     student.Name = textBox1.Text;
                     student.Avg = Convert.ToDouble(textBox2.Text);
@@ -174,10 +176,6 @@ namespace EntityFrameworkWinForms
             return student;
         }
 
-        private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
 
         private void dataGridView1_SelectionChanged(object sender, EventArgs e)
         {
@@ -214,6 +212,16 @@ namespace EntityFrameworkWinForms
 
         private void textBox4_TextChanged(object sender, EventArgs e)
         {
+
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            Form2 form2 = new Form2();
+            form2.startGroup = dataGridView2.CurrentRow.DataBoundItem as Group;
+            form2.ShowDialog();
+
+            UpdateStudentsGrid();
 
         }
     }
