@@ -7,67 +7,55 @@ using System.Threading.Tasks;
 
 namespace EntityFrameworkWinForms.Models
 {
-    public class Student
+    public class Doctor
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public Group groupe { get; set; } = new Group { Id = 0, Name = "P00" };
-        public double Avg { get; set; }
+        public int id { get; set; }
+        public string name { get; set; }
+        public double salary { get; set; }
+        public Specialization specialization { get; set; }
         public override string ToString()
         {
-            //return $"{Id,5} | {Name,10} | {Math.Round(Avg, 2),6} | {groupe}";
-            return $"{Id,5} | {Name,10} | {groupe}";
+            return $"{id,5} | {name,20} | {Math.Round(salary, 2),10} | {specialization}";
         }
     }
-    public class Group
+    public class Specialization
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public Teacher Curator { get; set; } = new Teacher { Id = 0, Name = "" };
+        public int id { get; set; }
+        public string name { get; set; }
 
-        /* public Group(int Id, string name) 
-        {
-            this.Id = Id;
-            this.Name = name;
-        }*/
         public override string ToString()
         {
-            // return $"{Id,5} | {Name,10} | {Curator}";
-            return $"{Id, 5} | {Name, 5}";
+            return $"{id,5} | {name,20}";
         }
     }
 
-    public class Teacher
+    public class Patient
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public string SecondName { get; set; }
+        public int Age { get; set; }
+
+        public Doctor Doctor { get; set; } = new Doctor();
+
         public override string ToString()
         {
-            return $"{Id,5} | {Name} | {SecondName}";
+            return $"{Id,5} | {Name,20} | {Age,4} | {Doctor.id,5} | {Doctor.name,20}";
         }
     }
-
-    public class Note { 
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public string Status { get; set; }
-    }
-
-    
 
     public class UniversityContext : DbContext
     {
-        //public DbSet<Note> Notes { get; set; }
-        public DbSet<Student> students { get; set; }
-        public DbSet<Group> groups { get; set; }
-        public DbSet<Teacher> teachers { get; set; }
+        public DbSet<Doctor> Doctors { get; set; }
+        public DbSet<Specialization> Specializations { get; set; }
+        public DbSet<Patient> Patients { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            string connectionString = "server=localhost;database=university;user=root;password=";
+            string connectionString = "server=localhost;database=hospital;user=root;password=";
             optionsBuilder.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
         }
+
+
+
     }
 }
