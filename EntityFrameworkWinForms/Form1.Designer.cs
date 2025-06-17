@@ -32,6 +32,8 @@
             dataGridView1 = new DataGridView();
             dataGridView2 = new DataGridView();
             dataGridView3 = new DataGridView();
+            AddDoctorToPatientButton = new Button();
+            label1 = new Label();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dataGridView2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dataGridView3).BeginInit();
@@ -69,11 +71,32 @@
             dataGridView3.TabIndex = 16;
             dataGridView3.CellContentClick += dataGridView3_CellContentClick;
             // 
+            // AddDoctorToPatientButton
+            // 
+            AddDoctorToPatientButton.Location = new Point(415, 389);
+            AddDoctorToPatientButton.Name = "AddDoctorToPatientButton";
+            AddDoctorToPatientButton.Size = new Size(100, 23);
+            AddDoctorToPatientButton.TabIndex = 17;
+            AddDoctorToPatientButton.Text = "Open Window";
+            AddDoctorToPatientButton.UseVisualStyleBackColor = true;
+            AddDoctorToPatientButton.Click += AddDoctorToPatientButton_Click;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(415, 360);
+            label1.Name = "label1";
+            label1.Size = new Size(123, 15);
+            label1.TabIndex = 18;
+            label1.Text = "Add Doctor To Patient";
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 639);
+            Controls.Add(label1);
+            Controls.Add(AddDoctorToPatientButton);
             Controls.Add(dataGridView3);
             Controls.Add(dataGridView2);
             Controls.Add(dataGridView1);
@@ -86,11 +109,14 @@
             ((System.ComponentModel.ISupportInitialize)dataGridView2).EndInit();
             ((System.ComponentModel.ISupportInitialize)dataGridView3).EndInit();
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
         private DataGridView dataGridView1;
         private DataGridView dataGridView2;
         private DataGridView dataGridView3;
+        private Button AddDoctorToPatientButton;
+        private Label label1;
     }
 }

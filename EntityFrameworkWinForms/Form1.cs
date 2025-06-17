@@ -7,13 +7,12 @@ namespace EntityFrameworkWinForms
 {
     public partial class Form1 : Form
     {
-        static int clicks = 0;
         public Form1()
         {
             InitializeComponent();
         }
 
-        
+
         private void UpdateSpecializationGrid()
         {
             using (var context = new UniversityContext())
@@ -80,6 +79,14 @@ namespace EntityFrameworkWinForms
         private void dataGridView3_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
 
+        }
+
+        private void AddDoctorToPatientButton_Click(object sender, EventArgs e)
+        {
+            Form2 form2 = new Form2();
+            form2.ShowDialog();
+
+            UpdatePatientsGrid();
         }
     }
 }
