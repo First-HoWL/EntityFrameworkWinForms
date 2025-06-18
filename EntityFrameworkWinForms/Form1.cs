@@ -7,7 +7,6 @@ namespace EntityFrameworkWinForms
 {
     public partial class Form1 : Form
     {
-        static int clicks = 0;
         public Form1()
         {
             InitializeComponent();
@@ -15,7 +14,7 @@ namespace EntityFrameworkWinForms
 
         private void button3_Click(object sender, EventArgs e)
         {
-            if (textBox1.Text == string.Empty || textBox2.Text == string.Empty)
+            /*if (textBox1.Text == string.Empty || textBox2.Text == string.Empty)
                 MessageBox.Show("DON\'T DO THAT!", "Exeption", MessageBoxButtons.OK, MessageBoxIcon.Error);
             else
                 //MessageBox.Show(textBox1.Text, "Hello there!");
@@ -31,14 +30,30 @@ namespace EntityFrameworkWinForms
             UpdateStudentsGrid();
 
             textBox1.Text = string.Empty;
-            textBox2.Text = string.Empty;
+            textBox2.Text = string.Empty;*/
+
+
+            Form2 form2 = new Form2();
+            form2.ShowDialog();
+
+            UpdateGrids();
+
+        }
+
+        public void UpdateGrids()
+        {
+            UpdateClientsGrid();
+            UpdateOrderDetailsGrid();
+            UpdateOrdersGrid();
+            UpdatePaymentsGrid();
+            UpdateProductsGrid();
         }
 
 
         private void button1_Click(object sender, EventArgs e)
         {
 
-            if (textBox1.Text == string.Empty || textBox2.Text == string.Empty)
+            /*if (textBox1.Text == string.Empty || textBox2.Text == string.Empty)
                 MessageBox.Show("DON\'T DO THAT!", "Exeption", MessageBoxButtons.OK, MessageBoxIcon.Error);
             else
                 using (var context = new UniversityContext())
@@ -59,13 +74,13 @@ namespace EntityFrameworkWinForms
             UpdateStudentsGrid();
 
 
-
+*/
 
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            using (var context = new UniversityContext())
+            /*using (var context = new UniversityContext())
             {
                 int studId = Convert.ToInt32(textBox4.Text);
                 if (studId == null)
@@ -80,7 +95,7 @@ namespace EntityFrameworkWinForms
                 }
                 context.SaveChanges();
             }
-            UpdateStudentsGrid();
+            UpdateStudentsGrid();*/
         }
 
 
@@ -103,27 +118,61 @@ namespace EntityFrameworkWinForms
             return Math.Round(rnd.Next(1, 11) + rnd.NextDouble(), 2);
         }
 
-        private void UpdateStudentsGrid()
+        private void UpdateProductsGrid()
         {
             using (var context = new UniversityContext())
             {
-                Group? group = dataGridView2.CurrentRow.DataBoundItem as Group;
+                /*Group? group = dataGridView2.CurrentRow.DataBoundItem as Group;
                 if (group == null) group = new Group { Id = 0 };
                 textBox3.Text = Convert.ToString(group.Id);
+                */
                 context.Database.EnsureCreated();
-                var students = context.students.Include(s => s.groupe).OrderBy(s => s.Id).Where(s => s.groupe.Id == group.Id).ToList();
-                dataGridView1.DataSource = students;
+                var Products = context.Products.OrderBy(s => s.Id).ToList();
+                dataGridView1.DataSource = Products;
 
                 context.SaveChanges();
             }
         }
-        private void UpdateGroupsGrid()
+        private void UpdateClientsGrid()
         {
             using (var context = new UniversityContext())
             {
                 context.Database.EnsureCreated();
-                var Groups = context.groups.Include(s => s.Curator).ToList();
-                dataGridView2.DataSource = Groups;
+                var Clients = context.Clients.ToList();
+                dataGridView2.DataSource = Clients;
+
+                context.SaveChanges();
+            }
+        }
+        private void UpdateOrdersGrid()
+        {
+            using (var context = new UniversityContext())
+            {
+                context.Database.EnsureCreated();
+                var Orders = context.Orders.Include(s => s.Client).ToList();
+                dataGridView3.DataSource = Orders;
+
+                context.SaveChanges();
+            }
+        }
+        private void UpdateOrderDetailsGrid()
+        {
+            using (var context = new UniversityContext())
+            {
+                context.Database.EnsureCreated();
+                var OrderDetails = context.OrderDetails.Include(s => s.Product).Include(s => s.Order).ToList();
+                dataGridView4.DataSource = OrderDetails;
+
+                context.SaveChanges();
+            }
+        }
+        private void UpdatePaymentsGrid()
+        {
+            using (var context = new UniversityContext())
+            {
+                context.Database.EnsureCreated();
+                var Payments = context.Payments.Include(s => s.Order).ToList();
+                dataGridView5.DataSource = Payments;
 
                 context.SaveChanges();
             }
@@ -156,29 +205,12 @@ namespace EntityFrameworkWinForms
             context.SaveChanges();
 
         };*/
-
-
-
-
-            UpdateGroupsGrid();
-            UpdateStudentsGrid();
+            UpdateGrids();
 
         }
-
-        public static Student GenerateStudent(UniversityContext context)
-        {
-            Student student = new Student();
-            var names = new List<string>() { "HoWl", "Aboba", "Dram", "1holl", "None", "Misha", "Super Star" };
-            student.Name = names[rnd.Next(0, names.Count)];
-            var a = rnd.Next(1, 5);
-            student.groupe = context.groups.Where(s => s.Id == a).First();
-            student.Avg = RandomAvg();
-            return student;
-        }
-
 
         private void dataGridView1_SelectionChanged(object sender, EventArgs e)
-        {
+        {/*
             Student? CurrentStudent = dataGridView1.CurrentRow.DataBoundItem as Student;
             if (CurrentStudent == null)
                 return;
@@ -186,19 +218,14 @@ namespace EntityFrameworkWinForms
             textBox2.Text = $"{CurrentStudent.Avg}";
             textBox4.Text = Convert.ToString(CurrentStudent.Id);
 
-
+        */
         }
 
         private void dataGridView2_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
 
-            UpdateStudentsGrid();
         }
 
-        private void label2_Click(object sender, EventArgs e)
-        {
-
-        }
 
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
@@ -210,19 +237,6 @@ namespace EntityFrameworkWinForms
 
         }
 
-        private void textBox4_TextChanged(object sender, EventArgs e)
-        {
 
-        }
-
-        private void button4_Click(object sender, EventArgs e)
-        {
-            Form2 form2 = new Form2();
-            form2.startGroup = dataGridView2.CurrentRow.DataBoundItem as Group;
-            form2.ShowDialog();
-
-            UpdateStudentsGrid();
-
-        }
     }
 }

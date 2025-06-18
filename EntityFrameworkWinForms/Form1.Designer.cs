@@ -31,23 +31,20 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             button3 = new Button();
             dataGridView1 = new DataGridView();
-            textBox1 = new TextBox();
-            label1 = new Label();
-            label2 = new Label();
-            textBox2 = new TextBox();
-            textBox3 = new TextBox();
-            button1 = new Button();
-            button2 = new Button();
             dataGridView2 = new DataGridView();
-            textBox4 = new TextBox();
-            button4 = new Button();
+            dataGridView3 = new DataGridView();
+            dataGridView4 = new DataGridView();
+            dataGridView5 = new DataGridView();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dataGridView2).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)dataGridView3).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)dataGridView4).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)dataGridView5).BeginInit();
             SuspendLayout();
             // 
             // button3
             // 
-            button3.Location = new Point(397, 147);
+            button3.Location = new Point(778, 316);
             button3.Name = "button3";
             button3.Size = new Size(75, 23);
             button3.TabIndex = 2;
@@ -61,117 +58,58 @@
             dataGridView1.EditMode = DataGridViewEditMode.EditProgrammatically;
             dataGridView1.Location = new Point(12, 12);
             dataGridView1.Name = "dataGridView1";
-            dataGridView1.Size = new Size(354, 316);
+            dataGridView1.Size = new Size(354, 267);
             dataGridView1.TabIndex = 3;
             dataGridView1.CellContentClick += dataGridView1_CellContentClick;
             dataGridView1.SelectionChanged += dataGridView1_SelectionChanged;
-            // 
-            // textBox1
-            // 
-            textBox1.Location = new Point(386, 70);
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(164, 23);
-            textBox1.TabIndex = 4;
-            // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Location = new Point(386, 52);
-            label1.Name = "label1";
-            label1.Size = new Size(39, 15);
-            label1.TabIndex = 5;
-            label1.Text = "Name";
-            // 
-            // label2
-            // 
-            label2.AutoSize = true;
-            label2.Location = new Point(575, 52);
-            label2.Name = "label2";
-            label2.Size = new Size(28, 15);
-            label2.TabIndex = 7;
-            label2.Text = "Avg";
-            label2.Click += label2_Click;
-            // 
-            // textBox2
-            // 
-            textBox2.Location = new Point(575, 70);
-            textBox2.Name = "textBox2";
-            textBox2.Size = new Size(164, 23);
-            textBox2.TabIndex = 6;
-            // 
-            // textBox3
-            // 
-            textBox3.Location = new Point(778, 604);
-            textBox3.Name = "textBox3";
-            textBox3.Size = new Size(10, 23);
-            textBox3.TabIndex = 11;
-            textBox3.Visible = false;
-            // 
-            // button1
-            // 
-            button1.Location = new Point(511, 147);
-            button1.Name = "button1";
-            button1.Size = new Size(75, 23);
-            button1.TabIndex = 12;
-            button1.Text = "Edit";
-            button1.UseVisualStyleBackColor = true;
-            button1.Click += button1_Click;
-            // 
-            // button2
-            // 
-            button2.Location = new Point(635, 147);
-            button2.Name = "button2";
-            button2.Size = new Size(75, 23);
-            button2.TabIndex = 13;
-            button2.Text = "Delete";
-            button2.UseVisualStyleBackColor = true;
-            button2.Click += button2_Click;
             // 
             // dataGridView2
             // 
             dataGridView2.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridView2.EditMode = DataGridViewEditMode.EditProgrammatically;
-            dataGridView2.Location = new Point(12, 360);
+            dataGridView2.Location = new Point(372, 12);
             dataGridView2.Name = "dataGridView2";
             dataGridView2.Size = new Size(354, 267);
             dataGridView2.TabIndex = 15;
             dataGridView2.CellClick += dataGridView2_CellContentClick;
             dataGridView2.SelectionChanged += dataGridView2_SelectionChanged;
             // 
-            // textBox4
+            // dataGridView3
             // 
-            textBox4.Location = new Point(751, 604);
-            textBox4.Name = "textBox4";
-            textBox4.Size = new Size(17, 23);
-            textBox4.TabIndex = 16;
-            textBox4.Visible = false;
-            textBox4.TextChanged += textBox4_TextChanged;
+            dataGridView3.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridView3.EditMode = DataGridViewEditMode.EditProgrammatically;
+            dataGridView3.Location = new Point(732, 12);
+            dataGridView3.Name = "dataGridView3";
+            dataGridView3.Size = new Size(354, 267);
+            dataGridView3.TabIndex = 18;
             // 
-            // button4
+            // dataGridView4
             // 
-            button4.Location = new Point(421, 263);
-            button4.Name = "button4";
-            button4.Size = new Size(75, 23);
-            button4.TabIndex = 17;
-            button4.Text = "Window";
-            button4.UseVisualStyleBackColor = true;
-            button4.Click += button4_Click;
+            dataGridView4.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridView4.EditMode = DataGridViewEditMode.EditProgrammatically;
+            dataGridView4.Location = new Point(12, 285);
+            dataGridView4.Name = "dataGridView4";
+            dataGridView4.Size = new Size(354, 267);
+            dataGridView4.TabIndex = 19;
+            // 
+            // dataGridView5
+            // 
+            dataGridView5.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridView5.EditMode = DataGridViewEditMode.EditProgrammatically;
+            dataGridView5.Location = new Point(372, 285);
+            dataGridView5.Name = "dataGridView5";
+            dataGridView5.Size = new Size(354, 267);
+            dataGridView5.TabIndex = 20;
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 639);
-            Controls.Add(button4);
-            Controls.Add(textBox4);
+            ClientSize = new Size(1098, 639);
+            Controls.Add(dataGridView5);
+            Controls.Add(dataGridView4);
+            Controls.Add(dataGridView3);
             Controls.Add(dataGridView2);
-            Controls.Add(button2);
-            Controls.Add(button1);
-            Controls.Add(textBox3);
-            Controls.Add(label2);
-            Controls.Add(textBox2);
-            Controls.Add(label1);
-            Controls.Add(textBox1);
             Controls.Add(dataGridView1);
             Controls.Add(button3);
             FormBorderStyle = FormBorderStyle.FixedDialog;
@@ -181,22 +119,18 @@
             Load += Form1_Load;
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             ((System.ComponentModel.ISupportInitialize)dataGridView2).EndInit();
+            ((System.ComponentModel.ISupportInitialize)dataGridView3).EndInit();
+            ((System.ComponentModel.ISupportInitialize)dataGridView4).EndInit();
+            ((System.ComponentModel.ISupportInitialize)dataGridView5).EndInit();
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
         private Button button3;
         private DataGridView dataGridView1;
-        private TextBox textBox1;
-        private Label label1;
-        private Label label2;
-        private TextBox textBox2;
-        private TextBox textBox3;
-        private Button button1;
-        private Button button2;
         private DataGridView dataGridView2;
-        private TextBox textBox4;
-        private Button button4;
+        private DataGridView dataGridView3;
+        private DataGridView dataGridView4;
+        private DataGridView dataGridView5;
     }
 }
