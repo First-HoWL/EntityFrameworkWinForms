@@ -19,7 +19,7 @@ namespace EntityFrameworkWinForms
 
         private void button3_Click(object sender, EventArgs e)
         {
-            
+
             Form2 form2 = new Form2();
             form2.ShowDialog();
 
@@ -91,7 +91,8 @@ namespace EntityFrameworkWinForms
         {
             using (var context = new UniversityContext())
             {
-                try {
+                try
+                {
                     context.Database.EnsureCreated();
                     List<Client> Clients = new List<Client>();
                     Func<Client, bool> func;
@@ -441,17 +442,17 @@ namespace EntityFrameworkWinForms
                         {
                             case "Id":
                                 {
-                                    changeComboBox4(new string[]{">", "<", "=="});
+                                    changeComboBox4(new string[] { ">", "<", "==" });
                                     break;
                                 }
                             case "Name":
                                 {
-                                    changeComboBox4(new string[]{"=="});
+                                    changeComboBox4(new string[] { "==" });
                                     break;
                                 }
                             case "Price":
                                 {
-                                    changeComboBox4(new string[]{">", "<", "=="});
+                                    changeComboBox4(new string[] { ">", "<", "==" });
                                     break;
                                 }
                             case "Category":
@@ -461,7 +462,7 @@ namespace EntityFrameworkWinForms
                                 }
                             case "InStock":
                                 {
-                                    changeComboBox4(new string[]{">", "<", "=="});
+                                    changeComboBox4(new string[] { ">", "<", "==" });
                                     break;
                                 }
 
@@ -503,28 +504,28 @@ namespace EntityFrameworkWinForms
                         dateTimePicker1.Visible = false;
                         switch (comboBox2.Text)
                         {
-                                case "Id":
+                            case "Id":
                                 {
                                     changeComboBox4(new string[] { ">", "<", "==" });
                                     comboBox3.Visible = false;
                                     textBox1.Visible = true;
                                     break;
                                 }
-                                case "Client":
+                            case "Client":
                                 {
                                     changeComboBox4(new string[] { "==" });
                                     comboBox3.Visible = true;
                                     textBox1.Visible = false;
                                     break;
                                 }
-                                case "OrderDate":
+                            case "OrderDate":
                                 {
                                     changeComboBox4(new string[] { ">", "<", "==" });
                                     comboBox3.Visible = false;
                                     textBox1.Visible = true;
                                     break;
                                 }
-                                case "Status":
+                            case "Status":
                                 {
                                     changeComboBox4(new string[] { "==" });
                                     comboBox3.Visible = false;
@@ -618,7 +619,7 @@ namespace EntityFrameworkWinForms
                                 }
 
                         }
-                        
+
                         break;
                     }
             }
@@ -663,7 +664,8 @@ namespace EntityFrameworkWinForms
                                 {
                                     if (textBox1.Text == string.Empty || comboBox2.Text == string.Empty)
                                         MessageBox.Show("DON\'T DO THAT!", "Exeption", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                    else {
+                                    else
+                                    {
                                         UpdateOrdersGrid();
                                     }
                                     break;
@@ -808,6 +810,12 @@ namespace EntityFrameworkWinForms
                         break;
                     }
             }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Form3 form3 = new Form3();
+            form3.ShowDialog();
         }
     }
 }

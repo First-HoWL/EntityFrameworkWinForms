@@ -43,6 +43,7 @@
             comboBox3 = new ComboBox();
             dateTimePicker1 = new DateTimePicker();
             comboBox4 = new ComboBox();
+            button2 = new Button();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dataGridView2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dataGridView3).BeginInit();
@@ -187,11 +188,22 @@
             comboBox4.TabIndex = 28;
             comboBox4.Visible = false;
             // 
+            // button2
+            // 
+            button2.Location = new Point(874, 529);
+            button2.Name = "button2";
+            button2.Size = new Size(95, 23);
+            button2.TabIndex = 29;
+            button2.Text = "Task Window";
+            button2.UseVisualStyleBackColor = true;
+            button2.Click += button2_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1098, 570);
+            Controls.Add(button2);
             Controls.Add(comboBox4);
             Controls.Add(dateTimePicker1);
             Controls.Add(comboBox3);
@@ -235,5 +247,6 @@
         private ComboBox comboBox3;
         private DateTimePicker dateTimePicker1;
         private ComboBox comboBox4;
+        private Button button2;
     }
 }

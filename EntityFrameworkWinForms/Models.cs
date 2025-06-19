@@ -9,7 +9,12 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace EntityFrameworkWinForms.Models
 {
-    
+    public class ProductSaleInfo
+    {
+        public string ProductName { get; set; }
+        public int TotalSold { get; set; }
+    }
+
 
     public class Product
     {
