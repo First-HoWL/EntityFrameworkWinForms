@@ -28,22 +28,6 @@ namespace EntityFrameworkWinForms
                 "Payments"
             });
 
-            /*
-            using (var context = new UniversityContext())
-            {
-                var groups = context.groups.ToArray();
-                if (groups == null) { return; }
-
-                comboGroupBox.Items.AddRange(groups);
-
-                if (startGroup != null)
-                {
-                    comboGroupBox.SelectedIndex = groups.ToList().FindIndex(g => g.Id == startGroup.Id);
-                }
-            }
-            comboGroupBox.SelectedItem = startGroup;*/
-
-
         }
 
         private void AddButton_Click(object sender, EventArgs e)
@@ -107,7 +91,7 @@ namespace EntityFrameworkWinForms
                                 context.Database.EnsureCreated();
                                 var Orders = context.Orders.ToList();
                                 var Products = context.Products.ToList();
-                                context.OrderDetails.Add(new OrderDetails { Quanity = Convert.ToInt32(TextBox1.Text), Product = context.Products.Find(Products[comboBox2.SelectedIndex].Id), Order = context.Orders.Find(Orders[comboBox3.SelectedIndex].Id) });
+                                context.OrderDetails.Add(new OrderDetails { Quanity = Convert.ToInt32(TextBox1.Text), Product = context.Products.Find(Products[comboBox3.SelectedIndex].Id), Order = context.Orders.Find(Orders[comboBox2.SelectedIndex].Id) });
                                 context.SaveChanges();
                                 UpdateOrderDetailsGrid();
                             }
@@ -134,19 +118,6 @@ namespace EntityFrameworkWinForms
             }
 
 
-
-            /*
-                        if (NameBox.Text == string.Empty || comboGroupBox.Text == string.Empty)
-                            MessageBox.Show("DON\'T DO THAT!", "Exeption", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        else
-                            using (var context = new UniversityContext())
-                            {
-                                var group = comboGroupBox.SelectedItem as Group;
-                                context.Database.EnsureCreated();
-                                context.students.Add(new Student { Name = NameBox.Text, groupe = context.groups.Find(group.Id) });
-                                context.SaveChanges();
-                            }
-                        this.Close();*/
         }
 
         private void UpdateProductsGrid()
@@ -289,8 +260,7 @@ namespace EntityFrameworkWinForms
                         }
                     case "Orders":
                         {
-                            var Orders = context.Orders.Include(s => s.Client).ToList();
-                            dataGridView1.DataSource = Orders;
+                            
 
                             DateLabel.Text = "Date";
                             TextLabel1.Text = "Status";
@@ -325,7 +295,9 @@ namespace EntityFrameworkWinForms
                             {
                                 strings[i++] = (item.ToString());
                             }
-
+                            
+                            var Orders = context.Orders.Include(s => s.Client).ToList();
+                            dataGridView1.DataSource = Orders;
                             comboBox2.Items.AddRange(strings);
 
                             break;
@@ -333,8 +305,8 @@ namespace EntityFrameworkWinForms
                     case "OrderDetails":
                         {
                             TextLabel1.Text = "Quanity";
-                            ComboLabel1.Text = "Product";
-                            ComboLabel2.Text = "Order";
+                            ComboLabel2.Text = "Product";
+                            ComboLabel1.Text = "Order";
 
                             TextLabel1.Visible = true;
                             TextBox1.Visible = true;
@@ -366,7 +338,7 @@ namespace EntityFrameworkWinForms
                                 strings[i++] = (item.ToString());
                             }
 
-                            comboBox2.Items.AddRange(strings);
+                            
 
 
                             var Orders = context.Orders.ToList();
@@ -376,8 +348,8 @@ namespace EntityFrameworkWinForms
                             {
                                 strings2[j++] = (item.ToString());
                             }
-
-                            comboBox3.Items.AddRange(strings2);
+                            comboBox2.Items.AddRange(strings2);
+                            comboBox3.Items.AddRange(strings);
 
 
                             var OrderDetails = context.OrderDetails.Include(s => s.Product).Include(p => p.Order).ToList();
@@ -443,18 +415,27 @@ namespace EntityFrameworkWinForms
             {
                 context.Database.EnsureCreated();
 
+                int ItemId = Convert.ToInt32(SicretTextBox.Text);
+                if (ItemId == null)
+                    return;
                 switch (comboBox1.Text)
                 {
                     case "Products":
                         {
                             if (TextBox1.Text == string.Empty || TextBox2.Text == string.Empty || TextBox3.Text == string.Empty || TextBox4.Text == string.Empty)
                                 MessageBox.Show("DON\'T DO THAT!", "Exeption", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            else
-                            {
-                                context.Database.EnsureCreated();
-                                context.Products.Add(new Product { Name = TextBox1.Text, Price = Convert.ToDouble(TextBox2.Text), Category = TextBox3.Text, InStock = Convert.ToInt32(TextBox4.Text) });
+                            else { 
+                                Product item = context.Products.Find(ItemId);
+                                item.Name = TextBox1.Text;
+                                item.Price = Convert.ToDouble(TextBox2.Text);
+                                item.Category = TextBox3.Text;
+                                item.InStock = Convert.ToInt32(TextBox4.Text);
+
+
                                 context.SaveChanges();
+                                
                                 UpdateProductsGrid();
+                            
                             }
                             break;
                         }
@@ -464,27 +445,35 @@ namespace EntityFrameworkWinForms
                                 MessageBox.Show("DON\'T DO THAT!", "Exeption", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             else
                             {
-                                context.Database.EnsureCreated();
-                                context.Clients.Add(new Client { Name = TextBox1.Text, Phone = TextBox2.Text });
+                                Client item = context.Clients.Find(ItemId);
+                                item.Name = TextBox1.Text;
+                                item.Phone = TextBox2.Text;
+
+
                                 context.SaveChanges();
+
                                 UpdateClientsGrid();
+
                             }
-
-
-
                             break;
                         }
                     case "Orders":
                         {
-                            if (TextBox1.Text == string.Empty || comboBox2.Text == string.Empty || dateTimePicker1.Text == string.Empty)
+                            if (TextBox1.Text == string.Empty || dateTimePicker1.Text == string.Empty || comboBox2.Text == string.Empty)
                                 MessageBox.Show("DON\'T DO THAT!", "Exeption", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             else
                             {
-                                context.Database.EnsureCreated();
                                 var client = context.Clients.ToList();
-                                context.Orders.Add(new Order { OrderDate = Convert.ToDateTime(dateTimePicker1.Text), Status = TextBox1.Text, Client = context.Clients.Find(client[comboBox2.SelectedIndex].Id) });
+                                Order item = context.Orders.Find(ItemId);
+                                item.Status = TextBox1.Text;
+                                item.Client = context.Clients.Find(client[comboBox2.SelectedIndex].Id);
+                                item.OrderDate = Convert.ToDateTime(dateTimePicker1.Text);
+
+
                                 context.SaveChanges();
+
                                 UpdateOrdersGrid();
+
                             }
                             break;
                         }
@@ -494,31 +483,45 @@ namespace EntityFrameworkWinForms
                                 MessageBox.Show("DON\'T DO THAT!", "Exeption", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             else
                             {
-                                context.Database.EnsureCreated();
-                                var Orders = context.Orders.ToList();
-                                var Products = context.Products.ToList();
-                                context.OrderDetails.Add(new OrderDetails { Quanity = Convert.ToInt32(TextBox1.Text), Product = context.Products.Find(Products[comboBox2.SelectedIndex].Id), Order = context.Orders.Find(Orders[comboBox3.SelectedIndex].Id) });
+                                var Order = context.Orders.ToList();
+                                var Product = context.Products.ToList();
+                                OrderDetails item = context.OrderDetails.Find(ItemId);
+                                item.Quanity = Convert.ToInt32(TextBox1.Text);
+                                item.Order = context.Orders.Find(Order[comboBox2.SelectedIndex].Id);
+                                item.Product = context.Products.Find(Product[comboBox3.SelectedIndex].Id);
+
+
                                 context.SaveChanges();
+
                                 UpdateOrderDetailsGrid();
+
                             }
                             break;
                         }
                     case "Payments":
                         {
-                            if (TextBox1.Text == string.Empty || TextBox2.Text == string.Empty || comboBox2.Text == string.Empty || dateTimePicker1.Text == string.Empty)
+                            if (TextBox1.Text == string.Empty || comboBox2.Text == string.Empty || dateTimePicker1.Text == string.Empty)
                                 MessageBox.Show("DON\'T DO THAT!", "Exeption", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             else
                             {
-                                context.Database.EnsureCreated();
-                                var Orders = context.Orders.ToList();
-                                context.Payments.Add(new Payment { Date = Convert.ToDateTime(dateTimePicker1.Text), Amount = Convert.ToInt32(TextBox1.Text), Order = context.Orders.Find(Orders[comboBox2.SelectedIndex].Id), PaymentMethod = TextBox2.Text });
+                                var Order = context.Orders.ToList();
+                                Payment item = context.Payments.Find(ItemId);
+                                item.Amount = Convert.ToDouble(TextBox1.Text);
+                                item.PaymentMethod = TextBox2.Text;
+                                item.Order = context.Orders.Find(Order[comboBox2.SelectedIndex].Id);
+                                item.Date = Convert.ToDateTime(dateTimePicker1.Text);
+
                                 context.SaveChanges();
+
                                 UpdatePaymentsGrid();
+
                             }
                             break;
                         }
 
+
                 }
+                context.SaveChanges();
             }
         }
 
@@ -634,98 +637,205 @@ namespace EntityFrameworkWinForms
 
         private void dataGridView1_SelectionChanged(object sender, EventArgs e)
         {
-            switch (comboBox1.Text)
+            using (var context = new UniversityContext())
             {
-                case "Products":
-                    {
-                        Product? CurrentItem = dataGridView1.CurrentRow.DataBoundItem as Product;
-                        if (CurrentItem == null)
-                            return;
-                        TextBox1.Text = CurrentItem.Name;
-                        TextBox2.Text = CurrentItem.Price.ToString();
-                        TextBox3.Text = CurrentItem.Category;
-                        TextBox4.Text = CurrentItem.InStock.ToString();
-                        SicretTextBox.Text = Convert.ToString(CurrentItem.Id);
-                        break;
-                    }
-                case "Clients":
-                    {
-                        int Id = Convert.ToInt32(SicretTextBox.Text);
-                        if (Id == null)
-                            return;
-                        context.Database.EnsureCreated();
-
-
-                        var a = MessageBox.Show("Are you sure?", "Question", MessageBoxButtons.YesNo);
-                        if (a == DialogResult.Yes)
+                switch (comboBox1.Text)
+                {
+                    case "Products":
                         {
-                            context.Clients.Remove(context.Clients.Find(Id));
+                            Product? CurrentItem = dataGridView1.CurrentRow.DataBoundItem as Product;
+                            if (CurrentItem == null)
+                                return;
+                            TextBox1.Text = CurrentItem.Name;
+                            TextBox2.Text = CurrentItem.Price.ToString();
+                            TextBox3.Text = CurrentItem.Category;
+                            TextBox4.Text = CurrentItem.InStock.ToString();
+                            SicretTextBox.Text = Convert.ToString(CurrentItem.Id);
+                            break;
                         }
-                        context.SaveChanges();
-
-                        UpdateClientsGrid();
-
-
-
-                        break;
-                    }
-                case "Orders":
-                    {
-                        int Id = Convert.ToInt32(SicretTextBox.Text);
-                        if (Id == null)
-                            return;
-                        context.Database.EnsureCreated();
-
-
-                        var a = MessageBox.Show("Are you sure?", "Question", MessageBoxButtons.YesNo);
-                        if (a == DialogResult.Yes)
+                    case "Clients":
                         {
-                            context.Orders.Remove(context.Orders.Find(Id));
+                            Client? CurrentItem = dataGridView1.CurrentRow.DataBoundItem as Client;
+                            if (CurrentItem == null)
+                                return;
+                            TextBox1.Text = CurrentItem.Name;
+                            TextBox2.Text = CurrentItem.Phone;
+                            SicretTextBox.Text = Convert.ToString(CurrentItem.Id);
+
+
+
+                            break;
                         }
-                        context.SaveChanges();
-
-                        UpdateOrdersGrid();
-                        break;
-                    }
-                case "OrderDetails":
-                    {
-                        int Id = Convert.ToInt32(SicretTextBox.Text);
-                        if (Id == null)
-                            return;
-                        context.Database.EnsureCreated();
-
-
-                        var a = MessageBox.Show("Are you sure?", "Question", MessageBoxButtons.YesNo);
-                        if (a == DialogResult.Yes)
+                    case "Orders":
                         {
-                            context.OrderDetails.Remove(context.OrderDetails.Find(Id));
+                            Order? CurrentItem = dataGridView1.CurrentRow.DataBoundItem as Order;
+                            if (CurrentItem == null)
+                                return;
+                            var Clients = context.Clients.ToList();
+
+                            comboBox2.Items.Clear();
+                            object[] strings = new object[Clients.Count];
+                            int i = 0;
+                            foreach (var item in Clients)
+                            {
+                                strings[i++] = (item.ToString());
+                            }
+
+                            comboBox2.Items.AddRange(strings);
+
+
+                            if (Clients != null)
+                            {
+                                comboBox2.SelectedIndex = Clients.FindIndex(g => g.Id == CurrentItem.Client.Id);
+                            }
+
+
+                            TextBox1.Text = CurrentItem.Status;
+                            dateTimePicker1.Text = CurrentItem.OrderDate.ToString();
+
+                            SicretTextBox.Text = Convert.ToString(CurrentItem.Id);
+                            break;
+
                         }
-                        context.SaveChanges();
-
-                        UpdateOrderDetailsGrid();
-                        break;
-                    }
-                case "Payments":
-                    {
-                        int Id = Convert.ToInt32(SicretTextBox.Text);
-                        if (Id == null)
-                            return;
-                        context.Database.EnsureCreated();
-
-
-                        var a = MessageBox.Show("Are you sure?", "Question", MessageBoxButtons.YesNo);
-                        if (a == DialogResult.Yes)
+                    case "OrderDetails":
                         {
-                            context.Payments.Remove(context.Payments.Find(Id));
+                            OrderDetails? CurrentItem = dataGridView1.CurrentRow.DataBoundItem as OrderDetails;
+                            if (CurrentItem == null)
+                                return;
+                            var Orders = context.Orders.ToList();
+                            if (Orders != null)
+                            {
+                                comboBox2.SelectedIndex = Orders.FindIndex(g => g.Id == CurrentItem.Order.Id);
+                            }
+                            var Product = context.Products.ToList();
+                            if (Product != null)
+                            {
+                                comboBox3.SelectedIndex = Product.FindIndex(g => g.Id == CurrentItem.Product.Id);
+                            }
+
+
+                            TextBox1.Text = CurrentItem.Quanity.ToString();
+                            SicretTextBox.Text = Convert.ToString(CurrentItem.Id);
+                            break;
                         }
-                        context.SaveChanges();
+                    case "Payments":
+                        {
+                            Payment? CurrentItem = dataGridView1.CurrentRow.DataBoundItem as Payment;
+                            if (CurrentItem == null)
+                                return;
+                            var Orders = context.Orders.ToList();
+                            if (Orders != null)
+                            {
+                                comboBox2.SelectedIndex = Orders.FindIndex(g => g.Id == CurrentItem.Order.Id);
+                            }
+                            dateTimePicker1.Text = CurrentItem.Date.ToString();
 
-                        UpdatePaymentsGrid();
-                        break;
-                    }
 
+                            TextBox1.Text = CurrentItem.Amount.ToString();
+                            TextBox2.Text = CurrentItem.PaymentMethod.ToString();
+                            SicretTextBox.Text = Convert.ToString(CurrentItem.Id);
+                            break;
+                        }
+
+                }
             }
 
+        }
+
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            using (var context = new UniversityContext())
+            {
+                switch (comboBox1.Text)
+                {
+                    case "Products":
+                        {
+                            Product? CurrentItem = dataGridView1.CurrentRow.DataBoundItem as Product;
+                            if (CurrentItem == null)
+                                return;
+                            TextBox1.Text = CurrentItem.Name;
+                            TextBox2.Text = CurrentItem.Price.ToString();
+                            TextBox3.Text = CurrentItem.Category;
+                            TextBox4.Text = CurrentItem.InStock.ToString();
+                            SicretTextBox.Text = Convert.ToString(CurrentItem.Id);
+                            break;
+                        }
+                    case "Clients":
+                        {
+                            Client? CurrentItem = dataGridView1.CurrentRow.DataBoundItem as Client;
+                            if (CurrentItem == null)
+                                return;
+                            TextBox1.Text = CurrentItem.Name;
+                            TextBox2.Text = CurrentItem.Phone;
+                            SicretTextBox.Text = Convert.ToString(CurrentItem.Id);
+
+
+
+                            break;
+                        }
+                    case "Orders":
+                        {
+                            Order? CurrentItem = dataGridView1.CurrentRow.DataBoundItem as Order;
+                            if (CurrentItem == null)
+                                return;
+                            var Clients = context.Clients.ToList();
+
+                            if (Clients != null)
+                            {
+                                var a = Clients.FindIndex(g => g.Id == CurrentItem.Client.Id);
+                                comboBox2.SelectedIndex = a == -1 || a == 0 ? 1 : a;
+                            }
+
+
+                            TextBox1.Text = CurrentItem.Status;
+                            dateTimePicker1.Text = CurrentItem.OrderDate.ToString();
+
+                            SicretTextBox.Text = Convert.ToString(CurrentItem.Id);
+                            break;
+
+                        }
+                    case "OrderDetails":
+                        {
+                            OrderDetails? CurrentItem = dataGridView1.CurrentRow.DataBoundItem as OrderDetails;
+                            if (CurrentItem == null)
+                                return;
+                            var Orders = context.Orders.ToList();
+                            if (Orders != null)
+                            {
+                                comboBox2.SelectedIndex = Orders.FindIndex(g => g.Id == CurrentItem.Order.Id);
+                            }
+                            var Product = context.Products.ToList();
+                            if (Product != null)
+                            {
+                                comboBox3.SelectedIndex = Product.FindIndex(g => g.Id == CurrentItem.Product.Id);
+                            }
+
+
+                            TextBox1.Text = CurrentItem.Quanity.ToString();
+                            SicretTextBox.Text = Convert.ToString(CurrentItem.Id);
+                            break;
+                        }
+                    case "Payments":
+                        {
+                            Payment? CurrentItem = dataGridView1.CurrentRow.DataBoundItem as Payment;
+                            if (CurrentItem == null)
+                                return;
+                            var Orders = context.Orders.ToList();
+                            if (Orders != null)
+                            {
+                                comboBox2.SelectedIndex = Orders.FindIndex(g => g.Id == CurrentItem.Order.Id);
+                            }
+                            dateTimePicker1.Text = CurrentItem.Date.ToString();
+
+
+                            TextBox1.Text = CurrentItem.Amount.ToString();
+                            TextBox2.Text = CurrentItem.PaymentMethod.ToString();
+                            SicretTextBox.Text = Convert.ToString(CurrentItem.Id);
+                            break;
+                        }
+
+                }
+            }
         }
     }
 }

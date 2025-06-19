@@ -1,7 +1,12 @@
 using EntityFrameworkWinForms.Models;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Diagnostics.Metrics;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
+using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace EntityFrameworkWinForms
 {
@@ -14,25 +19,7 @@ namespace EntityFrameworkWinForms
 
         private void button3_Click(object sender, EventArgs e)
         {
-            /*if (textBox1.Text == string.Empty || textBox2.Text == string.Empty)
-                MessageBox.Show("DON\'T DO THAT!", "Exeption", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            else
-                //MessageBox.Show(textBox1.Text, "Hello there!");
-                using (var context = new UniversityContext())
-                {
-                    context.Database.EnsureCreated();
-                    context.students.Add(new Student { Name = textBox1.Text, Avg = Convert.ToDouble(textBox2.Text), groupe = context.groups.Where(g => g.Id == Convert.ToInt32(textBox3.Text)).First() });
-
-
-                    context.SaveChanges();
-                }
-
-            UpdateStudentsGrid();
-
-            textBox1.Text = string.Empty;
-            textBox2.Text = string.Empty;*/
-
-
+            
             Form2 form2 = new Form2();
             form2.ShowDialog();
 
@@ -50,106 +37,154 @@ namespace EntityFrameworkWinForms
         }
 
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-
-            /*if (textBox1.Text == string.Empty || textBox2.Text == string.Empty)
-                MessageBox.Show("DON\'T DO THAT!", "Exeption", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            else
-                using (var context = new UniversityContext())
-                {
-                    int studId = Convert.ToInt32(textBox4.Text);
-                    if (studId == null)
-                        return;
-                    context.Database.EnsureCreated();
-
-
-                    Student student = context.students.Find(studId);
-                    student.Name = textBox1.Text;
-                    student.Avg = Convert.ToDouble(textBox2.Text);
-
-
-                    context.SaveChanges();
-                }
-            UpdateStudentsGrid();
-
-
-*/
-
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            /*using (var context = new UniversityContext())
-            {
-                int studId = Convert.ToInt32(textBox4.Text);
-                if (studId == null)
-                    return;
-                context.Database.EnsureCreated();
-
-
-                var a = MessageBox.Show("Are you sure?", "Question", MessageBoxButtons.YesNo);
-                if (a == DialogResult.Yes)
-                {
-                    context.students.Remove(context.students.Find(studId));
-                }
-                context.SaveChanges();
-            }
-            UpdateStudentsGrid();*/
-        }
-
-
-
-        static Random rnd = new Random();
-
-        /*public static Student GenerateStudent(UniversityContext context)
-        {
-            Student student = new Student();
-            var names = new List<string>() { "HoWl", "Дмитро", "Ігор", "Микита", "Aboba", "Dram", "1holl", "None" };
-            student.Name = names[rnd.Next(0, names.Count)];
-            var a = rnd.Next(1, 5);
-            student.groupe = context.Groups.Where(s => s.Id == a).First();
-            student.Avg = RandomAvg();
-            return student;
-        }*/
-
-        public static double RandomAvg()
-        {
-            return Math.Round(rnd.Next(1, 11) + rnd.NextDouble(), 2);
-        }
 
         private void UpdateProductsGrid()
         {
             using (var context = new UniversityContext())
             {
-                /*Group? group = dataGridView2.CurrentRow.DataBoundItem as Group;
-                if (group == null) group = new Group { Id = 0 };
-                textBox3.Text = Convert.ToString(group.Id);
-                */
-                context.Database.EnsureCreated();
-                var Products = context.Products.OrderBy(s => s.Id).ToList();
-                dataGridView1.DataSource = Products;
+                try
+                {
+                    List<Product> Products = new List<Product>();
+                    Func<Product, bool> func;
+                    context.Database.EnsureCreated();
+                    if (comboBox1.Text != "Products")
+                        Products = context.Products.OrderBy(s => s.Id).ToList();
+                    else
+                    {
 
-                context.SaveChanges();
+                        ParameterExpression param = Expression.Parameter(typeof(Product), "s");
+                        MemberExpression prop = Expression.Property(param, comboBox2.Text);
+                        ConstantExpression val = Expression.Constant(comboBox2.Text == "Id" || comboBox2.Text == "InStock" ?
+                            Convert.ToInt32(textBox1.Text) : comboBox2.Text == "Price" ?
+                            Convert.ToDouble(textBox1.Text) : textBox1.Text);
+
+                        Expression body;
+
+                        switch (comboBox4.Text)
+                        {
+                            case ">":
+                                body = Expression.GreaterThan(prop, val);
+                                break;
+                            case "<":
+                                body = Expression.LessThan(prop, val);
+                                break;
+                            default:
+                                body = Expression.Equal(prop, val);
+                                break;
+                        }
+
+                        var lambda = Expression.Lambda<Func<Product, bool>>(body, param);
+
+
+                        Products = context.Products.Where(lambda).OrderBy(s => s.Id).ToList();
+                    }
+                    dataGridView1.DataSource = Products;
+
+                    context.SaveChanges();
+                }
+                catch (Exception ex)
+                {
+                }
             }
         }
         private void UpdateClientsGrid()
         {
             using (var context = new UniversityContext())
             {
-                context.Database.EnsureCreated();
-                var Clients = context.Clients.ToList();
-                dataGridView2.DataSource = Clients;
+                try {
+                    context.Database.EnsureCreated();
+                    List<Client> Clients = new List<Client>();
+                    Func<Client, bool> func;
+                    if (comboBox1.Text != "Clients")
+                        Clients = context.Clients.OrderBy(s => s.Id).ToList();
+                    else
+                    {
+                        ParameterExpression param = Expression.Parameter(typeof(Client), "s");
+                        MemberExpression prop = Expression.Property(param, comboBox2.Text);
+                        ConstantExpression val = Expression.Constant(comboBox2.Text == "Id" ?
+                            Convert.ToInt32(textBox1.Text) : textBox1.Text);
 
-                context.SaveChanges();
+                        Expression body;
+
+                        switch (comboBox4.Text)
+                        {
+                            case ">":
+                                body = Expression.GreaterThan(prop, val);
+                                break;
+                            case "<":
+                                body = Expression.LessThan(prop, val);
+                                break;
+                            default:
+                                body = Expression.Equal(prop, val);
+                                break;
+                        }
+
+                        var lambda = Expression.Lambda<Func<Client, bool>>(body, param);
+
+
+                        Clients = context.Clients.Where(lambda).OrderBy(s => s.Id).ToList();
+                    }
+
+                    dataGridView2.DataSource = Clients;
+
+                    context.SaveChanges();
+                }
+                catch (Exception ex)
+                {
+                }
             }
         }
         private void UpdateOrdersGrid()
         {
             using (var context = new UniversityContext())
             {
+
+                List<Order> Orders = new List<Order>();
+                Func<Order, bool> func;
+                if (comboBox1.Text != "Orders")
+                    Orders = context.Orders.Include(s => s.Client).OrderBy(s => s.Id).ToList();
+                else
+                {
+                    try
+                    {
+                        var client = context.Clients.ToList();
+                        ParameterExpression param = Expression.Parameter(typeof(Order), "s");
+                        MemberExpression prop = Expression.Property(param, comboBox2.Text);
+                        ConstantExpression val = Expression.Constant(comboBox2.Text == "Id" ?
+                            Convert.ToInt32(textBox1.Text) : comboBox2.Text == "OrderDate" ?
+                            Convert.ToDateTime(dateTimePicker1.Text).Date : comboBox2.Text == "Client" ?
+                            context.Clients.Find(client[comboBox3.SelectedIndex].Id) : textBox1.Text
+                            );
+
+                        Expression body;
+
+                        switch (comboBox4.Text)
+                        {
+                            case ">":
+                                body = Expression.GreaterThan(prop, val);
+                                break;
+                            case "<":
+                                body = Expression.LessThan(prop, val);
+                                break;
+                            default:
+                                body = Expression.Equal(prop, val);
+                                break;
+                        }
+
+                        var lambda = Expression.Lambda<Func<Order, bool>>(body, param);
+
+
+                        Orders = context.Orders.Where(lambda).Include(s => s.Client).OrderBy(s => s.Id).ToList();
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
+                }
+
+
+
                 context.Database.EnsureCreated();
-                var Orders = context.Orders.Include(s => s.Client).ToList();
                 dataGridView3.DataSource = Orders;
 
                 context.SaveChanges();
@@ -157,21 +192,112 @@ namespace EntityFrameworkWinForms
         }
         private void UpdateOrderDetailsGrid()
         {
+
             using (var context = new UniversityContext())
             {
+
+                List<OrderDetails> OrderDetails = new List<OrderDetails>();
+                Func<OrderDetails, bool> func;
+                if (comboBox1.Text != "OrderDetails")
+                    OrderDetails = context.OrderDetails.Include(s => s.Order).Include(s => s.Product).OrderBy(s => s.Id).ToList();
+                else
+                {
+                    try
+                    {
+                        var Orders = context.Orders.ToList();
+                        var Products = context.Products.ToList();
+                        ParameterExpression param = Expression.Parameter(typeof(OrderDetails), "s");
+                        MemberExpression prop = Expression.Property(param, comboBox2.Text);
+                        ConstantExpression val = Expression.Constant(comboBox2.Text == "Id" || comboBox2.Text == "Quanity" ?
+                            Convert.ToInt32(textBox1.Text) : comboBox2.Text == "Order" ?
+                            context.Orders.Find(Orders[comboBox3.SelectedIndex].Id) :
+                            context.Products.Find(Products[comboBox3.SelectedIndex].Id)
+                            );
+
+                        Expression body;
+
+                        switch (comboBox4.Text)
+                        {
+                            case ">":
+                                body = Expression.GreaterThan(prop, val);
+                                break;
+                            case "<":
+                                body = Expression.LessThan(prop, val);
+                                break;
+                            default:
+                                body = Expression.Equal(prop, val);
+                                break;
+                        }
+
+                        var lambda = Expression.Lambda<Func<OrderDetails, bool>>(body, param);
+
+
+                        OrderDetails = context.OrderDetails.Where(lambda).Include(s => s.Order).Include(s => s.Product).OrderBy(s => s.Id).ToList();
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
+                }
+
+
+
                 context.Database.EnsureCreated();
-                var OrderDetails = context.OrderDetails.Include(s => s.Product).Include(s => s.Order).ToList();
                 dataGridView4.DataSource = OrderDetails;
 
                 context.SaveChanges();
             }
+
         }
         private void UpdatePaymentsGrid()
         {
+
             using (var context = new UniversityContext())
             {
+
+                List<Payment> Payments = new List<Payment>();
+                Func<Payment, bool> func;
+                if (comboBox1.Text != "Payments")
+                    Payments = context.Payments.Include(s => s.Order).OrderBy(s => s.Id).ToList();
+                else
+                {
+                    try
+                    {
+                        var Orders = context.Orders.ToList();
+                        ParameterExpression param = Expression.Parameter(typeof(Payment), "s");
+                        MemberExpression prop = Expression.Property(param, comboBox2.Text);
+                        ConstantExpression val = Expression.Constant(comboBox2.Text == "Id" ?
+                            Convert.ToInt32(textBox1.Text) : comboBox2.Text == "Amount" ?
+                            Convert.ToDouble(textBox1.Text) : comboBox2.Text == "Date" ?
+                            Convert.ToDateTime(dateTimePicker1.Text).Date : comboBox2.Text == "Order" ?
+                            context.Orders.Find(Orders[comboBox3.SelectedIndex].Id) : textBox1.Text
+                            );
+
+                        Expression body;
+
+                        switch (comboBox4.Text)
+                        {
+                            case ">":
+                                body = Expression.GreaterThan(prop, val);
+                                break;
+                            case "<":
+                                body = Expression.LessThan(prop, val);
+                                break;
+                            default:
+                                body = Expression.Equal(prop, val);
+                                break;
+                        }
+
+                        var lambda = Expression.Lambda<Func<Payment, bool>>(body, param);
+
+
+                        Payments = context.Payments.Include(s => s.Order).Where(lambda).OrderBy(s => s.Id).ToList();
+                    }
+                    catch (Exception ex)
+                    {
+                    }
+                }
                 context.Database.EnsureCreated();
-                var Payments = context.Payments.Include(s => s.Order).ToList();
                 dataGridView5.DataSource = Payments;
 
                 context.SaveChanges();
@@ -180,45 +306,25 @@ namespace EntityFrameworkWinForms
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            comboBox1.Items.AddRange(new string[]{
+                "Products",
+                "Clients",
+                "Orders",
+                "OrderDetails",
+                "Payments"
+            });
+            comboBox4.Items.AddRange(new string[]{
+                ">",
+                "<",
+                "=="
+            });
 
-            /*using (var context = new UniversityContext())
-            {
-                context.Database.EnsureCreated();
-
-                *//*context.groups.Add(
-                    new Group { Name = "P47", Curator = new Teacher { Name = "Menya", SecondName = "Net" } }
-                );*/
-            /*context.groups.AddRange(
-                new Group { Name = "P23", Curator = new Teacher { Name = "HoWL", SecondName = "Csharpowich" } },
-                new Group { Name = "P78", Curator = new Teacher { Name = "none", SecondName = "none" } },
-                new Group { Name = "P10", Curator = new Teacher { Name = "jsonReader", SecondName = "notJsonReader" } },
-                new Group { Name = "P55", Curator = new Teacher { Name = "Aboba", SecondName = "Abobowna" } }
-                );*//*
-            context.SaveChanges();
-            context.Database.EnsureCreated();
-
-            for (int i = 0; i < 10; i++)
-            {
-                context.students.Add(GenerateStudent(context));
-            }
-
-            context.SaveChanges();
-
-        };*/
             UpdateGrids();
 
         }
 
         private void dataGridView1_SelectionChanged(object sender, EventArgs e)
-        {/*
-            Student? CurrentStudent = dataGridView1.CurrentRow.DataBoundItem as Student;
-            if (CurrentStudent == null)
-                return;
-            textBox1.Text = CurrentStudent.Name;
-            textBox2.Text = $"{CurrentStudent.Avg}";
-            textBox4.Text = Convert.ToString(CurrentStudent.Id);
-
-        */
+        {
         }
 
         private void dataGridView2_CellContentClick(object sender, DataGridViewCellEventArgs e)
@@ -237,6 +343,471 @@ namespace EntityFrameworkWinForms
 
         }
 
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            using (var context = new UniversityContext())
+            {
+                comboBox2.Visible = true;
+                textBox1.Visible = true;
+                button1.Visible = true;
+                comboBox4.Visible = true;
 
+                comboBox2.Items.Clear();
+                comboBox3.Items.Clear();
+                comboBox4.SelectedIndex = -1;
+                dateTimePicker1.Text = DateTime.Now.Date.ToString();
+                textBox1.Text = string.Empty;
+
+
+                switch (comboBox1.Text)
+                {
+                    case "Products":
+                        {
+                            comboBox2.Items.AddRange(new string[]{
+                                "Id",
+                                "Name",
+                                "Price",
+                                "Category",
+                                "InStock"
+                            });
+
+
+                            break;
+                        }
+                    case "Clients":
+                        {
+                            comboBox2.Items.AddRange(new string[]{
+                                "Id",
+                                "Name",
+                                "Phone"
+                            });
+
+                            break;
+                        }
+                    case "Orders":
+                        {
+                            comboBox2.Items.AddRange(new string[]{
+                                "Id",
+                                "Client",
+                                "OrderDate",
+                                "Status"
+                            });
+                            break;
+                        }
+                    case "OrderDetails":
+                        {
+                            comboBox2.Items.AddRange(new string[]{
+                                "Id",
+                                "Order",
+                                "Product",
+                                "Quanity"
+                            });
+                            break;
+                        }
+                    case "Payments":
+                        {
+                            comboBox2.Items.AddRange(new string[]{
+                                "Id",
+                                "Amount",
+                                "PaymentMethod",
+                                "Date",
+                                "Order"
+                            });
+                            break;
+                        }
+                }
+            }
+        }
+
+        public void changeComboBox4(string[] strings)
+        {
+            comboBox4.Items.Clear();
+            comboBox4.Items.AddRange(strings);
+            comboBox4.SelectedIndex = -1;
+
+        }
+
+        private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            switch (comboBox1.Text)
+            {
+                case "Products":
+                    {
+                        comboBox3.Visible = false;
+                        textBox1.Visible = true;
+                        dateTimePicker1.Visible = false;
+
+                        switch (comboBox2.Text)
+                        {
+                            case "Id":
+                                {
+                                    changeComboBox4(new string[]{">", "<", "=="});
+                                    break;
+                                }
+                            case "Name":
+                                {
+                                    changeComboBox4(new string[]{"=="});
+                                    break;
+                                }
+                            case "Price":
+                                {
+                                    changeComboBox4(new string[]{">", "<", "=="});
+                                    break;
+                                }
+                            case "Category":
+                                {
+                                    changeComboBox4(new string[] { "==" });
+                                    break;
+                                }
+                            case "InStock":
+                                {
+                                    changeComboBox4(new string[]{">", "<", "=="});
+                                    break;
+                                }
+
+                        }
+
+
+                        break;
+                    }
+                case "Clients":
+                    {
+                        comboBox3.Visible = false;
+                        textBox1.Visible = true;
+                        dateTimePicker1.Visible = false;
+
+                        switch (comboBox2.Text)
+                        {
+                            case "Id":
+                                {
+                                    changeComboBox4(new string[] { ">", "<", "==" });
+                                    break;
+                                }
+                            case "Name":
+                                {
+                                    changeComboBox4(new string[] { "==" });
+                                    break;
+                                }
+                            case "Phone":
+                                {
+                                    changeComboBox4(new string[] { "==" });
+                                    break;
+                                }
+
+                        }
+
+                        break;
+                    }
+                case "Orders":
+                    {
+                        dateTimePicker1.Visible = false;
+                        switch (comboBox2.Text)
+                        {
+                                case "Id":
+                                {
+                                    changeComboBox4(new string[] { ">", "<", "==" });
+                                    comboBox3.Visible = false;
+                                    textBox1.Visible = true;
+                                    break;
+                                }
+                                case "Client":
+                                {
+                                    changeComboBox4(new string[] { "==" });
+                                    comboBox3.Visible = true;
+                                    textBox1.Visible = false;
+                                    break;
+                                }
+                                case "OrderDate":
+                                {
+                                    changeComboBox4(new string[] { ">", "<", "==" });
+                                    comboBox3.Visible = false;
+                                    textBox1.Visible = true;
+                                    break;
+                                }
+                                case "Status":
+                                {
+                                    changeComboBox4(new string[] { "==" });
+                                    comboBox3.Visible = false;
+                                    textBox1.Visible = true;
+                                    break;
+                                }
+
+                        }
+                        break;
+                    }
+                case "OrderDetails":
+                    {
+                        dateTimePicker1.Visible = false;
+                        switch (comboBox2.Text)
+                        {
+                            case "Id":
+                                {
+                                    changeComboBox4(new string[] { ">", "<", "==" });
+                                    comboBox3.Visible = false;
+                                    textBox1.Visible = true;
+                                    break;
+                                }
+                            case "Order":
+                                {
+                                    changeComboBox4(new string[] { "==" });
+                                    comboBox3.Visible = true;
+                                    textBox1.Visible = false;
+                                    break;
+                                }
+                            case "Product":
+                                {
+                                    changeComboBox4(new string[] { "==" });
+                                    comboBox3.Visible = true;
+                                    textBox1.Visible = false;
+                                    break;
+                                }
+                            case "Quanity":
+                                {
+                                    changeComboBox4(new string[] { ">", "<", "==" });
+                                    comboBox3.Visible = false;
+                                    textBox1.Visible = true;
+                                    break;
+                                }
+
+                        }
+                        break;
+                    }
+                case "Payments":
+                    {
+                        switch (comboBox2.Text)
+                        {
+                            case "Id":
+                                {
+                                    changeComboBox4(new string[] { ">", "<", "==" });
+                                    dateTimePicker1.Visible = false;
+                                    comboBox3.Visible = false;
+                                    textBox1.Visible = true;
+                                    break;
+                                }
+                            case "Amount":
+                                {
+                                    changeComboBox4(new string[] { ">", "<", "==" });
+                                    dateTimePicker1.Visible = false;
+                                    comboBox3.Visible = false;
+                                    textBox1.Visible = true;
+                                    break;
+                                }
+                            case "PaymentMethod":
+                                {
+                                    changeComboBox4(new string[] { "==" });
+                                    dateTimePicker1.Visible = false;
+                                    comboBox3.Visible = false;
+                                    textBox1.Visible = true;
+                                    break;
+                                }
+                            case "Order":
+                                {
+                                    changeComboBox4(new string[] { "==" });
+                                    dateTimePicker1.Visible = false;
+                                    comboBox3.Visible = true;
+                                    textBox1.Visible = false;
+                                    break;
+                                }
+                            case "Date":
+                                {
+                                    changeComboBox4(new string[] { ">", "<", "==" });
+                                    dateTimePicker1.Visible = true;
+                                    comboBox3.Visible = false;
+                                    textBox1.Visible = false;
+                                    break;
+                                }
+
+                        }
+                        
+                        break;
+                    }
+            }
+        }
+        private void comboBox3_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            switch (comboBox1.Text)
+            {
+                case "Products":
+                    {
+                        if (textBox1.Text == string.Empty || comboBox2.Text == string.Empty)
+                            MessageBox.Show("DON\'T DO THAT!", "Exeption", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        else
+                        {
+                            UpdateProductsGrid();
+                        }
+
+
+                        break;
+                    }
+                case "Clients":
+                    {
+                        if (textBox1.Text == string.Empty || comboBox2.Text == string.Empty)
+                            MessageBox.Show("DON\'T DO THAT!", "Exeption", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        else
+                        {
+                            UpdateClientsGrid();
+                        }
+
+                        break;
+                    }
+                case "Orders":
+                    {
+                        switch (comboBox2.Text)
+                        {
+                            case "Id":
+                                {
+                                    if (textBox1.Text == string.Empty || comboBox2.Text == string.Empty)
+                                        MessageBox.Show("DON\'T DO THAT!", "Exeption", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    else {
+                                        UpdateOrdersGrid();
+                                    }
+                                    break;
+                                }
+                            case "Client":
+                                {
+                                    if (comboBox3.Text == string.Empty || comboBox2.Text == string.Empty)
+                                        MessageBox.Show("DON\'T DO THAT!", "Exeption", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    else
+                                    {
+                                        UpdateOrdersGrid();
+                                    }
+                                    break;
+                                }
+                            case "OrderDate":
+                                {
+                                    if (dateTimePicker1.Text == string.Empty || comboBox2.Text == string.Empty)
+                                        MessageBox.Show("DON\'T DO THAT!", "Exeption", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    else
+                                    {
+                                        UpdateOrdersGrid();
+                                    }
+                                    break;
+                                }
+                            case "Status":
+                                {
+                                    if (textBox1.Text == string.Empty || comboBox2.Text == string.Empty)
+                                        MessageBox.Show("DON\'T DO THAT!", "Exeption", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    else
+                                    {
+                                        UpdateOrdersGrid();
+                                    }
+                                    break;
+                                }
+                        }
+                        break;
+                    }
+                case "OrderDetails":
+                    {
+                        switch (comboBox2.Text)
+                        {
+                            case "Id":
+                                {
+                                    if (textBox1.Text == string.Empty || comboBox2.Text == string.Empty)
+                                        MessageBox.Show("DON\'T DO THAT!", "Exeption", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    else
+                                    {
+                                        UpdateOrderDetailsGrid();
+                                    }
+                                    break;
+                                }
+                            case "Order":
+                                {
+                                    if (comboBox3.Text == string.Empty || comboBox2.Text == string.Empty)
+                                        MessageBox.Show("DON\'T DO THAT!", "Exeption", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    else
+                                    {
+                                        UpdateOrderDetailsGrid();
+                                    }
+                                    break;
+                                }
+                            case "Product":
+                                {
+                                    if (comboBox3.Text == string.Empty || comboBox2.Text == string.Empty)
+                                        MessageBox.Show("DON\'T DO THAT!", "Exeption", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    else
+                                    {
+                                        UpdateOrderDetailsGrid();
+                                    }
+                                    break;
+                                }
+                            case "Quanity":
+                                {
+                                    if (textBox1.Text == string.Empty || comboBox2.Text == string.Empty)
+                                        MessageBox.Show("DON\'T DO THAT!", "Exeption", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    else
+                                    {
+                                        UpdateOrderDetailsGrid();
+                                    }
+                                    break;
+                                }
+
+                        }
+                        break;
+                    }
+                case "Payments":
+                    {
+                        switch (comboBox2.Text)
+                        {
+                            case "Id":
+                                {
+                                    if (textBox1.Text == string.Empty || comboBox2.Text == string.Empty)
+                                        MessageBox.Show("DON\'T DO THAT!", "Exeption", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    else
+                                    {
+                                        UpdatePaymentsGrid();
+                                    }
+                                    break;
+                                }
+                            case "Amount":
+                                {
+                                    if (textBox1.Text == string.Empty || comboBox2.Text == string.Empty)
+                                        MessageBox.Show("DON\'T DO THAT!", "Exeption", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    else
+                                    {
+                                        UpdatePaymentsGrid();
+                                    }
+                                    break;
+                                }
+                            case "PaymentMethod":
+                                {
+                                    if (textBox1.Text == string.Empty || comboBox2.Text == string.Empty)
+                                        MessageBox.Show("DON\'T DO THAT!", "Exeption", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    else
+                                    {
+                                        UpdatePaymentsGrid();
+                                    }
+                                    break;
+                                }
+                            case "Order":
+                                {
+                                    if (comboBox3.Text == string.Empty || comboBox2.Text == string.Empty)
+                                        MessageBox.Show("DON\'T DO THAT!", "Exeption", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    else
+                                    {
+                                        UpdatePaymentsGrid();
+                                    }
+                                    break;
+                                }
+                            case "Date":
+                                {
+                                    if (dateTimePicker1.Text == string.Empty || comboBox2.Text == string.Empty)
+                                        MessageBox.Show("DON\'T DO THAT!", "Exeption", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    else
+                                    {
+                                        UpdatePaymentsGrid();
+                                    }
+                                    break;
+                                }
+
+                        }
+                        break;
+                    }
+            }
+        }
     }
 }

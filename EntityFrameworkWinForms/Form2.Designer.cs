@@ -119,6 +119,7 @@
             dataGridView1.Name = "dataGridView1";
             dataGridView1.Size = new Size(354, 267);
             dataGridView1.TabIndex = 21;
+            dataGridView1.CellContentClick += dataGridView1_CellContentClick;
             dataGridView1.SelectionChanged += dataGridView1_SelectionChanged;
             // 
             // label3
